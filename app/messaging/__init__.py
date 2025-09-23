@@ -1,0 +1,1 @@
+# Messaging module for handling RabbitMQ consumers 
