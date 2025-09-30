@@ -23,12 +23,12 @@ load_dotenv()
 KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS")
 KAFKA_TOPIC = os.getenv("CANDIDATE_INVITATION_TOPIC_EXCHANGE_NAME")
 KAFKA_CONSUMER_GROUP = os.getenv("KAFKA_CONSUMER_GROUP")
-KAFKA_CLIENT_ID = os.getenv("KAFKA_CLIENT_ID")
-KAFKA_SECURITY_PROTOCOL = os.getenv("KAFKA_SECURITY_PROTOCOL")
-KAFKA_SASL_MECHANISM = os.getenv("KAFKA_SASL_MECHANISM")
-KAFKA_SASL_JAAS_CONFIG = os.getenv("KAFKA_SASL_JAAS_CONFIG")
-KAFKA_CLIENT_DNS_LOOKUP = os.getenv("KAFKA_CLIENT_DNS_LOOKUP")
-KAFKA_SESSION_TIMEOUT_MS = os.getenv("KAFKA_SESSION_TIMEOUT_MS")
+# KAFKA_CLIENT_ID = os.getenv("KAFKA_CLIENT_ID")
+# KAFKA_SECURITY_PROTOCOL = os.getenv("KAFKA_SECURITY_PROTOCOL")
+# KAFKA_SASL_MECHANISM = os.getenv("KAFKA_SASL_MECHANISM")
+# KAFKA_SASL_JAAS_CONFIG = os.getenv("KAFKA_SASL_JAAS_CONFIG")
+# KAFKA_CLIENT_DNS_LOOKUP = os.getenv("KAFKA_CLIENT_DNS_LOOKUP")
+# KAFKA_SESSION_TIMEOUT_MS = os.getenv("KAFKA_SESSION_TIMEOUT_MS")
 KAFKA_ACKS = os.getenv("KAFKA_ACKS")
 KAFKA_AUTO_OFFSET_RESET = "earliest"
 KAFKA_ENABLE_AUTO_COMMIT = "true"
@@ -38,7 +38,7 @@ if KAFKA_BOOTSTRAP_SERVERS is None:
     raise Exception("KAFKA_BOOTSTRAP_SERVERS is not set in the environment variables")
 if KAFKA_TOPIC is None:
     raise Exception("CANDIDATE_INVITATION_TOPIC_EXCHANGE_NAME is not set in the environment variables")
-if KAFKA_GROUP_ID is None:
+if KAFKA_CONSUMER_GROUP is None:
     raise Exception("KAFKA_GROUP_ID is not set in the environment variables")
 
 class CandidateInvitationMessage(BaseModel):
@@ -61,13 +61,14 @@ class CandidateInvitationKafkaConsumer:
         self.bootstrap_servers = bootstrap_servers
         self.topic = KAFKA_TOPIC
         self.group_id = KAFKA_CONSUMER_GROUP
-        self.client_id = KAFKA_CLIENT_ID
-        self.security_protocol = KAFKA_SECURITY_PROTOCOL
-        self.sasl_mechanism = KAFKA_SASL_MECHANISM
-        self.sasl_jaas_config = KAFKA_SASL_JAAS_CONFIG
-        self.client_dns_lookup = KAFKA_CLIENT_DNS_LOOKUP
-        self.session_timeout_ms = KAFKA_SESSION_TIMEOUT_MS
+        # self.client_id = KAFKA_CLIENT_ID
+        # self.security_protocol = KAFKA_SECURITY_PROTOCOL
+        # self.sasl_mechanism = KAFKA_SASL_MECHANISM
+        # self.sasl_jaas_config = KAFKA_SASL_JAAS_CONFIG
+        # self.client_dns_lookup = KAFKA_CLIENT_DNS_LOOKUP
+        # self.session_timeout_ms = KAFKA_SESSION_TIMEOUT_MS
         self.acks = KAFKA_ACKS
+        
         self.consumer = None
         self.running = True
         self.shutdown_event = Event()
