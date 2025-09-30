@@ -22,7 +22,14 @@ load_dotenv()
 # Kafka configuration
 KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS")
 KAFKA_TOPIC = os.getenv("CANDIDATE_INVITATION_TOPIC_EXCHANGE_NAME")
-KAFKA_GROUP_ID = os.getenv("KAFKA_GROUP_ID")
+KAFKA_CONSUMER_GROUP = os.getenv("KAFKA_CONSUMER_GROUP")
+KAFKA_CLIENT_ID = os.getenv("KAFKA_CLIENT_ID")
+KAFKA_SECURITY_PROTOCOL = os.getenv("KAFKA_SECURITY_PROTOCOL")
+KAFKA_SASL_MECHANISM = os.getenv("KAFKA_SASL_MECHANISM")
+KAFKA_SASL_JAAS_CONFIG = os.getenv("KAFKA_SASL_JAAS_CONFIG")
+KAFKA_CLIENT_DNS_LOOKUP = os.getenv("KAFKA_CLIENT_DNS_LOOKUP")
+KAFKA_SESSION_TIMEOUT_MS = os.getenv("KAFKA_SESSION_TIMEOUT_MS")
+KAFKA_ACKS = os.getenv("KAFKA_ACKS")
 KAFKA_AUTO_OFFSET_RESET = "earliest"
 KAFKA_ENABLE_AUTO_COMMIT = "true"
 
@@ -53,7 +60,14 @@ class CandidateInvitationKafkaConsumer:
     def __init__(self, bootstrap_servers: str = KAFKA_BOOTSTRAP_SERVERS):
         self.bootstrap_servers = bootstrap_servers
         self.topic = KAFKA_TOPIC
-        self.group_id = KAFKA_GROUP_ID
+        self.group_id = KAFKA_CONSUMER_GROUP
+        self.client_id = KAFKA_CLIENT_ID
+        self.security_protocol = KAFKA_SECURITY_PROTOCOL
+        self.sasl_mechanism = KAFKA_SASL_MECHANISM
+        self.sasl_jaas_config = KAFKA_SASL_JAAS_CONFIG
+        self.client_dns_lookup = KAFKA_CLIENT_DNS_LOOKUP
+        self.session_timeout_ms = KAFKA_SESSION_TIMEOUT_MS
+        self.acks = KAFKA_ACKS
         self.consumer = None
         self.running = True
         self.shutdown_event = Event()
@@ -82,6 +96,13 @@ class CandidateInvitationKafkaConsumer:
                 'max.poll.interval.ms': 300000,
                 'fetch.min.bytes': 1,
                 'fetch.max.wait.ms': 500,
+                'client.id': self.client_id,
+                'security.protocol': self.security_protocol,
+                'sasl.mechanism': self.sasl_mechanism,
+                'sasl.jaas.config': self.sasl_jaas_config,
+                'client.dns.lookup': self.client_dns_lookup,
+                'session.timeout.ms': self.session_timeout_ms,
+                'acks': self.acks,
             }
             
             self.consumer = Consumer(config)
