@@ -6,6 +6,7 @@ from typing import Optional, Union
 from google.cloud import storage
 from google.cloud.exceptions import GoogleCloudError
 from fastapi import HTTPException
+from dotenv import load_dotenv
 
 logger = logging.getLogger(__name__)
 
@@ -13,6 +14,8 @@ class GoogleCloudStorageService:
     """
     Service for handling Google Cloud Storage operations
     """
+    
+    load_dotenv()
     
     def __init__(self):
         self.bucket_name = os.getenv("GCS_BUCKET_NAME")

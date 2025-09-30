@@ -17,4 +17,6 @@ __pycache__
 .env.prod
 .replit
 recordings
-maximal-plate-444121-g9-051687712fdd.json
+*fdd.json
+*bc8.json
+postgres_data
