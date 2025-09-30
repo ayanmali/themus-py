@@ -38,7 +38,7 @@ if KAFKA_BOOTSTRAP_SERVERS is None:
     raise Exception("KAFKA_BOOTSTRAP_SERVERS is not set in the environment variables")
 if KAFKA_TOPIC is None:
     raise Exception("CANDIDATE_INVITATION_TOPIC_EXCHANGE_NAME is not set in the environment variables")
-if KAFKA_GROUP_ID is None:
+if KAFKA_CONSUMER_GROUP is None:
     raise Exception("KAFKA_GROUP_ID is not set in the environment variables")
 
 class CandidateInvitationMessage(BaseModel):
