@@ -52,6 +52,14 @@ async def root():
     return {"message": "Hello World"}
 
 
+@app.get("/health")
+async def health():
+    return {"message": "OK"}
+
+# @app.get("/health")
+# async def health():
+#     return {"message": "OK"}
+
 # Routers
 app.include_router(candidates_router)
 app.include_router(recordings_router)

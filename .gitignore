@@ -19,4 +19,5 @@ __pycache__
 recordings
 *fdd.json
 *bc8.json
+*530.json
 postgres_data

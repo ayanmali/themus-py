@@ -1,7 +1,9 @@
 *.env
 *.env.prod
-maximal-plate-444121-g9-051687712fdd.json
-gcp.json
+**.env
+**.env.prod
+*.json
+**.json
 *__pycache__
 *.ruff_cache
 postgres_data
