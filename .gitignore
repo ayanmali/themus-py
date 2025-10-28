@@ -17,6 +17,7 @@ __pycache__
 .env.prod
 .replit
 recordings
+*530.json
 *fdd.json
 *bc8.json
 postgres_data

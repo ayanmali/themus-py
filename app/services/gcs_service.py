@@ -7,6 +7,7 @@ from google.cloud import storage
 from google.cloud.exceptions import GoogleCloudError
 from fastapi import HTTPException
 from dotenv import load_dotenv
+from datetime import timedelta
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +42,41 @@ class GoogleCloudStorageService:
             raise HTTPException(
                 status_code=500, 
                 detail="Failed to initialize cloud storage service"
+            )
+
+    async def generate_signed_url(self, filename: str) -> str:
+        """
+        Generate a V4 signed URL for uploading a file directly to GCS via PUT
+        from the client. The signed URL will be valid for 60 minutes and will
+        include the inferred content type based on the filename.
+        
+        Args:
+            filename: Object key to upload to in the bucket
+        
+        Returns:
+            str: A V4 signed URL for HTTP PUT uploads
+        """
+        try:
+            blob = self.bucket.blob(filename)
+
+            # Infer content type
+            content_type, _ = mimetypes.guess_type(filename)
+            if not content_type:
+                content_type = "application/octet-stream"
+
+            url = blob.generate_signed_url(
+                version="v4",
+                expiration=timedelta(minutes=15),
+                method="PUT",
+                content_type=content_type,
+            )
+
+            return url
+        except Exception as e:
+            logger.error(f"Error generating signed upload URL for {filename}: {e}")
+            raise HTTPException(
+                status_code=500,
+                detail="Failed to generate upload URL"
             )
 
     async def download_file(self, filename: str) -> bytes:

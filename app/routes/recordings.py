@@ -17,6 +17,8 @@ from app.dependencies import DBSessionDep, GCSServiceDep
 import json
 import os
 from datetime import datetime
+import mimetypes
+from pydantic import BaseModel
 
 recordings_router = APIRouter(
     prefix="/api/recordings",
@@ -48,6 +50,60 @@ async def get_recordings(
             return await get_all_recordings(session, skip, limit)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch recordings: {e}")
+
+# Create a signed upload URL so the client can upload directly to GCS
+class SignedUploadRequest(BaseModel):
+    file_extension: str = ".mp4"
+
+
+@recordings_router.post("/signed-upload-url")
+async def get_signed_upload_url(
+    gcs_service: GCSServiceDep,
+    body: SignedUploadRequest
+):
+    try:
+        # Normalize extension
+        file_extension = body.file_extension or ".mp4"
+        if not file_extension.startswith("."):
+            file_extension = f".{file_extension}"
+
+        # Generate unique object key
+        timestamp = int(datetime.now().timestamp() * 1000)
+        object_key = f"recordings/recording_{timestamp}{file_extension}"
+
+        # Determine content type for the upload header
+        content_type, _ = mimetypes.guess_type(object_key)
+        if not content_type:
+            content_type = "application/octet-stream"
+
+        # Get signed URL for PUT upload
+        upload_url = await gcs_service.generate_signed_url(object_key)
+
+        return {
+            "upload_url": upload_url,
+            "object_key": object_key,
+            "method": "PUT",
+            "headers": {
+                "Content-Type": content_type
+            }
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to generate upload URL: {e}")
+
+# Finalize a recording by creating DB record after client-side upload completes
+@recordings_router.post("/finalize", response_model=RecordingResponseDto)
+async def finalize_recording(
+    session: DBSessionDep,
+    recording: InsertRecordingDto
+):
+    try:
+        return await create_recording(session, recording)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to finalize recording: {e}")
 
 # Get specific recording
 @recordings_router.get("/{recording_id}", response_model=RecordingResponseDto)

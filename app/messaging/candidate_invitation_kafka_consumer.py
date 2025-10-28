@@ -248,7 +248,7 @@ class CandidateInvitationKafkaConsumer:
         logger.info("Consumer stopped")
 
 
-def main():
+def start_candidate_invitation_kafka_consumer():
     """Main function to run the consumer"""
     if KAFKA_BOOTSTRAP_SERVERS is None:
         raise Exception("KAFKA_BOOTSTRAP_SERVERS is not set in the environment variables")
@@ -263,4 +263,4 @@ def main():
         sys.exit(1)
 
 if __name__ == "__main__":
-    main()
+    start_candidate_invitation_kafka_consumer()
